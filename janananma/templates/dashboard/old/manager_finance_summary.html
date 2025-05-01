@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="text-center mb-4">Manager Monthly Summary</h2>
+
+  <div class="accordion" id="dailyFinanceAccordion">
+    {% for entry in finance_entries %}
+    <div class="accordion-item mb-3">
+      <h2 class="accordion-header" id="heading{{ entry.id }}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ entry.id }}" aria-expanded="false" aria-controls="collapse{{ entry.id }}">
+          {{ entry.date }} - Sale: ₹{{ entry.sale_of_day }} | Purchase Paid: ₹{{ entry.purchase_paid }} | Expenditure: ₹{{ entry.total_expenditure }} | Closing Cash: ₹{{ entry.balance }}
+        </button>
+        <a href="{% url 'edit-daily-finance' entry.id %}" class="btn btn-sm btn-warning ms-2">Edit</a>
+      </h2>
+      <div id="collapse{{ entry.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ entry.id }}" data-bs-parent="#dailyFinanceAccordion">
+        <div class="accordion-body">
+          <p><strong>Previous Day Balance:</strong> ₹{{ entry.previous_day_balance }}</p>
+          <p><strong>Other Income:</strong> ₹{{ entry.other_income }}</p>
+          <p><strong>Staff Salary Paid:</strong> ₹{{ entry.staff_salary }}</p>
+          <p><strong>Credit Paid Out:</strong> ₹{{ entry.credit_paid_out }}</p>
+          <p><strong>Other Expenditure:</strong> ₹{{ entry.other_expenditure }}</p>
+          <p><strong>Medicine Return:</strong> ₹{{ entry.medicine_return }}</p>
+          <p><strong>Bank Spend:</strong> ₹{{ entry.money_from_bank }}</p>
+
+          <hr>
+
+          <h5>Bank Transactions:</h5>
+          <ul>
+            {% for bank in bank_entries %}
+              {% if bank.date == entry.date %}
+                <li>{{ bank.transaction_type }} - ₹{{ bank.amount }} ({{ bank.description }})</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+          <h5>Credit Transactions:</h5>
+          <ul>
+            {% for credit in credit_entries %}
+              {% if credit.date == entry.date %}
+                <li>{{ credit.staff_name }} - ₹{{ credit.credit_given }}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">No finance entries for this month yet.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

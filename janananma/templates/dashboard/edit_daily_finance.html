@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load custom_filters %}
+<div class="container my-4">
+  <h2>Edit Daily Finance Entry - {{ finance_entry.date }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Previous Day Balance</label>
+      <input type="number" step="0.01" name="previous_day_balance" class="form-control" value="{{ finance_entry.previous_day_balance }}">
+    </div>
+    <div class="mb-3">
+      <label>Money From Bank</label>
+      <input type="number" step="0.01" name="money_from_bank" class="form-control" value="{{ finance_entry.money_from_bank }}">
+    </div>
+    <div class="mb-3">
+      <label>Credit Received</label>
+      <input type="number" step="0.01" name="credit_received" class="form-control" value="{{ finance_entry.credit_received }}">
+    </div>
+    <div class="mb-3">
+      <label>Credit Given</label>
+      <input type="number" step="0.01" name="credit_given" class="form-control" value="{{ finance_entry.credit_given }}">
+    </div>
+    <div class="mb-3">
+      <label>Google Pay Income</label>
+      <input type="number" step="0.01" name="google_pay_income" class="form-control" value="{{ finance_entry.google_pay_income }}">
+    </div>
+    <div class="mb-3">
+      <label>Today's Sale</label>
+      <input type="number" step="0.01" name="sale_of_day" class="form-control" value="{{ finance_entry.sale_of_day }}">
+    </div>
+    <div class="mb-3">
+      <label>Other Income</label>
+      <input type="number" step="0.01" name="other_income" class="form-control" value="{{ finance_entry.other_income }}">
+    </div>
+    <div class="mb-3">
+      <label>SIP Paid</label>
+      <input type="number" step="0.01" name="sip_paid" class="form-control" value="{{ finance_entry.sip_paid }}">
+    </div>
+    <div class="mb-3">
+      <label>Staff Salary</label>
+      <input type="number" step="0.01" name="staff_salary" class="form-control" value="{{ finance_entry.staff_salary }}">
+    </div>
+    <div class="mb-3">
+      <label>Chitty Paid</label>
+      <input type="number" step="0.01" name="chitty_paid" class="form-control" value="{{ finance_entry.chitty_paid }}">
+    </div>
+    <div class="mb-3">
+      <label>Credit Paid Out</label>
+      <input type="number" step="0.01" name="credit_paid_out" class="form-control" value="{{ finance_entry.credit_paid_out }}">
+    </div>
+    <div class="mb-3">
+      <label>Other Expenditure</label>
+      <input type="number" step="0.01" name="other_expenditure" class="form-control" value="{{ finance_entry.other_expenditure }}">
+    </div>
+    <div class="mb-3">
+      <label>Medicine Return</label>
+      <input type="number" step="0.01" name="medicine_return" class="form-control" value="{{ finance_entry.medicine_return }}">
+    </div>
+    <div class="mb-3">
+      <label>Purchase Paid</label>
+      <input type="number" step="0.01" name="purchase_paid" class="form-control" value="{{ finance_entry.purchase_paid }}">
+    </div>
+    <div class="mb-3">
+      <label>Cash Closing Balance</label>
+      <input type="number" step="0.01" name="balance" class="form-control" value="{{ finance_entry.balance }}">
+    </div>
+
+    <h5>Bank Transactions</h5>
+
+{% if bank_transactions %}
+  {% for bank in bank_transactions %}
+    <div class="row g-3 mb-2">
+      <div class="col-md-3">
+        <select name="bank_transaction_type_{{ bank.id }}" class="form-select">
+          <option value="Income" {% if bank.transaction_type == "Income" %}selected{% endif %}>Income</option>
+          <option value="Expenditure" {% if bank.transaction_type == "Expenditure" %}selected{% endif %}>Expenditure</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="number" step="0.01" name="bank_amount_{{ bank.id }}" value="{{ bank.amount }}" class="form-control">
+      </div>
+      <div class="col-md-6">
+        <input type="text" name="bank_description_{{ bank.id }}" value="{{ bank.description }}" class="form-control">
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="text-muted">
+    No Bank Transactions recorded.
+  </div>
+{% endif %}
+
+ 
+ 
+
+<h4 class="mt-4">Credit Given Details</h4>
+<div class="row g-3 mb-2">
+  {% for staff in credit_names %}
+  <div class="col-md-6">
+    <label>{{ staff }}</label>
+  </div>
+  <div class="col-md-6">
+    <input type="number" step="0.01" name="credit_given_{{ staff|lower }}" 
+           class="form-control" 
+           value="{{ credit_dict|get_item:staff|default:"0" }}">
+  </div>
+  {% endfor %}
+</div>
+
+<div class="text-center mt-4">
+  <button type="submit" class="btn btn-primary">Update Entry</button>
+</div>
+
+</form>
+</div>     
+{% endblock %}

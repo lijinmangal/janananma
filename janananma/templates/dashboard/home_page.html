@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load user_filters %}
+
+<!-- Login Button -->
+<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+    Login
+  </button>
+  
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Login</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form.as_p }}
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <h5 class="mt-4">Welcome, {{ user.username }}</h5>
+
+{% if user|has_group:"manager" %}
+    <a href="{% url 'manager_purchase_entry' %}" class="btn btn-warning mt-2">Purchase Entry</a>
+    <a href="{% url 'manager_daily_finance_entry' %}" class="btn btn-info mt-2">Finance Entry</a>
+    <a href="#" class="btn btn-secondary mt-2">Manager Summary (coming soon)</a>
+{% elif user|has_group:"owner" %}
+    <a href="{% url 'owner_dashboard' %}" class="btn btn-dark mt-2">Owner Dashboard</a>
+    <a href="{% url 'owner_manage_wholesalers' %}" class="btn btn-primary mt-2">Add Wholesalers</a>
+  {% endif %}
+
+  <a href="{% url 'logout' %}" class="btn btn-outline-danger mt-3">Logout</a>
+
+{% else %}
+  <p class="mt-4">Please login to access dashboard options.</p>
+{% endif %}
+
+
+{% endblock %}
