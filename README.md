@@ -1,0 +1,2 @@
+# janananma
+financial soft 
